@@ -9,8 +9,8 @@ import (
 	"strings"
 )
 
-// X12 line reader and part delimiters
-type rawX12FileReader struct {
+// RawX12FileReader : X12 line reader and part delimiters
+type RawX12FileReader struct {
 	reader         *bufio.Reader
 	segmentTerm    byte
 	elementTerm    byte
@@ -19,14 +19,16 @@ type rawX12FileReader struct {
 	icvn           string
 }
 
+// RawSegment : TODO
 type RawSegment struct {
 	Segment   Segment
 	LineCount int
 }
 
-func NewRawX12FileReader(inFile io.Reader) (*rawX12FileReader, error) {
+// NewRawX12FileReader : TODO
+func NewRawX12FileReader(inFile io.Reader) (*RawX12FileReader, error) {
 	const isaLength = 106
-	r := new(rawX12FileReader)
+	r := new(RawX12FileReader)
 	r.reader = bufio.NewReader(inFile)
 	//buffer := bytes.NewBuffer(make([]byte, 0))
 	first, err := r.reader.Peek(isaLength)
@@ -43,8 +45,8 @@ func NewRawX12FileReader(inFile io.Reader) (*rawX12FileReader, error) {
 	r.icvn = icvn
 	return r, nil
 }
-
-func (r *rawX12FileReader) GetSegments() <-chan RawSegment {
+// GetSegments : TODO
+func (r *RawX12FileReader) GetSegments() <-chan RawSegment {
 	ch := make(chan RawSegment)
 	ct := 0
 	go func() {

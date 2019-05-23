@@ -40,8 +40,8 @@ func TestArbitraryDelimiters(t *testing.T) {
 	}
 	expectedCount := 7
 	ct := 0
-	for _ = range raw.GetSegments() {
-		ct += 1
+	for range raw.GetSegments() {
+		ct++
 	}
 	if ct != expectedCount {
 		t.Errorf("Didn't get expected segment count of %d, instead got %d", expectedCount, ct)
@@ -80,8 +80,8 @@ func TestArbitraryDelimiters5010(t *testing.T) {
 	}
 	expectedCount := 7
 	ct := 0
-	for _ = range raw.GetSegments() {
-		ct += 1
+	for range raw.GetSegments() {
+		ct++
 	}
 	if ct != expectedCount {
 		t.Errorf("Didn't get expected segment count of %d, instead got %d", expectedCount, ct)
@@ -91,15 +91,15 @@ func TestArbitraryDelimiters5010(t *testing.T) {
 //str1 = strings.Replace(str1, "&", "\x1C", -1)
 
 func X12InterchangeControlVersion5010(t *testing.T) {
-	isa_line := "ISA&00&          &00&          &ZZ&ZZ000          &ZZ&ZZ001          &030828&1128&^&00501&000010121&0&T&!+\n"
-	inFile := strings.NewReader(isa_line)
+	isaLine := "ISA&00&          &00&          &ZZ&ZZ000          &ZZ&ZZ001          &030828&1128&^&00501&000010121&0&T&!+\n"
+	inFile := strings.NewReader(isaLine)
 	raw, err := NewRawX12FileReader(inFile)
 	if err != nil {
 		t.Errorf("NewRawX12FileReader failed")
 	}
 	expected := "00501"
 	if raw.icvn != expected {
-		t.Errorf("Didn't get expected result [%s], instead got s%c]", expected, raw.icvn)
+		t.Errorf("Didn't get expected result [%s], instead got [%s]", expected, raw.icvn)
 	}
 }
 
@@ -115,8 +115,8 @@ func testParse834(t *testing.T) {
 	defer inFile.Close()
 	raw, err := NewRawX12FileReader(inFile)
 	ct := 0
-	for _ = range raw.GetSegments() {
-		ct += 1
+	for range raw.GetSegments() {
+		ct++
 	}
 	if ct != 7 {
 		t.Errorf("Didn't get expected segment count of %d, instead got %d", 7, ct)

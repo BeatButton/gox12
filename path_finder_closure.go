@@ -1,9 +1,9 @@
 package gox12
 
-import ()
-
+// PathFinder : TODO
 type PathFinder func(string, Segment) (string, bool, error)
 
+// MakeMapFinder : TODO
 func MakeMapFinder() PathFinder {
 	var hardMap = map[string]string{
 		"ISA": "/ISA_LOOP/ISA",
@@ -14,8 +14,8 @@ func MakeMapFinder() PathFinder {
 		"SE":  "/ISA_LOOP/GS_LOOP/ST_LOOP/SE",
 	}
 	return func(rawpath string, s Segment) (string, bool, error) {
-		segId := s.SegmentId
-		p, ok := hardMap[segId]
+		segID := s.SegmentID
+		p, ok := hardMap[segID]
 		if ok {
 			return p, ok, nil
 		}

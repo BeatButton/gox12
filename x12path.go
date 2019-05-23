@@ -17,7 +17,7 @@ import (
 
 var refdesRegexp = regexp.MustCompile("^(?P<seg_id>[A-Z][A-Z0-9]{1,2})?(\\[(?P<id_val>[A-Z0-9]+)\\])?(?P<ele_idx>[0-9]{2})?(-(?P<subele_idx>[0-9]+))?$")
 
-// An X12 path is comprised of a path of loop identifiers, a segment
+// X12Path : An X12 path is comprised of a path of loop identifiers, a segment
 // identifier, and element position, and a composite position.
 //
 // The last loop id might be a segment id.
@@ -31,8 +31,8 @@ var refdesRegexp = regexp.MustCompile("^(?P<seg_id>[A-Z][A-Z0-9]{1,2})?(\\[(?P<i
 // 02
 type X12Path struct {
 	Path          string // no leading slash indicates a relative path
-	SegmentId     string
-	IdValue       string
+	SegmentID     string
+	IDValue       string
 	ElementIdx    int
 	SubelementIdx int
 }
@@ -51,7 +51,7 @@ func split(s string, c string, cutc bool) (string, string) {
 	return s[0:i], s[i:]
 }
 
-// Parse parses an X12 Path string into component parts,
+// ParseX12Path parses an X12 Path string into component parts,
 // The last part of the may may be a segment identifier
 func ParseX12Path(rawpath string) (x12path *X12Path, err error) {
 	if rawpath == "" {
@@ -65,11 +65,11 @@ func ParseX12Path(rawpath string) (x12path *X12Path, err error) {
 	// set struct values...
 	basepath, refdes := path.Split(rawpath)
 	var found bool
-	var seg_id string
-	var id_val string
-	var ele_idx int
-	var subele_idx int
-	if found, seg_id, id_val, ele_idx, subele_idx, err = parseRefDes(refdes); err != nil {
+	var segID string
+	var idVal string
+	var eleIdx int
+	var subeleIdx int
+	if found, segID, idVal, eleIdx, subeleIdx, err = parseRefDes(refdes); err != nil {
 		// not a segment
 		fmt.Println(err.Error())
 		return nil, err
@@ -81,23 +81,24 @@ func ParseX12Path(rawpath string) (x12path *X12Path, err error) {
 	if basepath != "" && basepath[len(basepath)-1] == '/' {
 		x12path.Path = basepath[:len(basepath)-1]
 	}
-	if seg_id == "" && id_val != "" {
+	if segID == "" && idVal != "" {
 		err = fmt.Errorf("Path '%s' is invalid. Must specify a segment identifier with a qualifier", rawpath)
 		return nil, err
 	}
-	if seg_id == "" && (ele_idx != 0 || subele_idx != 0) && len(x12path.Path) > 0 {
+	if segID == "" && (eleIdx != 0 || subeleIdx != 0) && len(x12path.Path) > 0 {
 		err = fmt.Errorf("Path '%s' is invalid. Must specify a segment identifier", rawpath)
 		return nil, err
 	}
-	x12path.SegmentId = seg_id
-	x12path.IdValue = id_val
-	x12path.ElementIdx = ele_idx
-	x12path.SubelementIdx = subele_idx
+	x12path.SegmentID = segID
+	x12path.IDValue = idVal
+	x12path.ElementIdx = eleIdx
+	x12path.SubelementIdx = subeleIdx
 	return x12path, nil
 }
 
-func (x12path *X12Path) IsAbs() bool {
-	return path.IsAbs(x12path.Path)
+// IsAbs : TODO
+func (p *X12Path) IsAbs() bool {
+	return path.IsAbs(p.Path)
 }
 
 func getSubeleIdx(refdes string) (rest string, idx int, err error) {
@@ -146,7 +147,7 @@ func parseRefDes(refdes string) (seg_id, id_val string, ele_idx, subele_idx int,
     }
 */
 
-func parseRefDes(refdes string) (found bool, seg_id, id_val string, ele_idx, subele_idx int, err error) {
+func parseRefDes(refdes string) (found bool, segID, idVal string, eleIdx, subeleIdx int, err error) {
 	//  failure 1 - idx not int, depend not satisfied
 	// failure 2 - is not a refdes
 	if refdes == "" {
@@ -169,23 +170,23 @@ func parseRefDes(refdes string) (found bool, seg_id, id_val string, ele_idx, sub
 		}
 		switch name {
 		case "seg_id":
-			seg_id = match[i]
+			segID = match[i]
 		case "id_val":
-			id_val = match[i]
+			idVal = match[i]
 		case "ele_idx":
 			v, _ := strconv.ParseInt(match[i], 10, 8)
-			ele_idx = int(v)
+			eleIdx = int(v)
 		case "subele_idx":
 			v, _ := strconv.ParseInt(match[i], 10, 8)
-			subele_idx = int(v)
+			subeleIdx = int(v)
 		}
 	}
-	return found, seg_id, id_val, ele_idx, subele_idx, nil
+	return found, segID, idVal, eleIdx, subeleIdx, nil
 }
 
-// Is the path empty?
-func (x12path *X12Path) Empty() bool {
-	return x12path.Path == "" && x12path.SegmentId == "" && x12path.ElementIdx == 0
+// Empty : Is the path empty?
+func (p *X12Path) Empty() bool {
+	return p.Path == "" && p.SegmentID == "" && p.ElementIdx == 0
 }
 
 /*
@@ -210,10 +211,10 @@ func (x12path *X12Path) Empty() bool {
 // Assemble the segment parts of a X12Path into a string
 func (p *X12Path) formatRefdes() string {
 	var parts []string
-	if p.SegmentId != "" {
-		parts = append(parts, p.SegmentId)
-		if p.IdValue != "" {
-			parts = append(parts, fmt.Sprintf("[%s]", p.IdValue))
+	if p.SegmentID != "" {
+		parts = append(parts, p.SegmentID)
+		if p.IDValue != "" {
+			parts = append(parts, fmt.Sprintf("[%s]", p.IDValue))
 		}
 	}
 	if p.ElementIdx > 0 {

@@ -66,7 +66,7 @@ func TestMatcherAgg(t *testing.T) {
 	var tests = []struct {
 		isFound bool
 		spath   string
-		seg_id  string
+		segID   string
 	}{
 		{true, "/ISA_LOOP/ISA", "ISA"},
 		{true, "/ISA_LOOP/GS_LOOP/ST_LOOP/ST", "ST"},
@@ -76,13 +76,13 @@ func TestMatcherAgg(t *testing.T) {
 	finder := NewFirstMatchPathFinder(NewHeaderMapFinder())
 	curPath := ""
 	for _, tt := range tests {
-		seg := Segment{SegmentId: tt.seg_id}
+		seg := Segment{SegmentID: tt.segID}
 		newpath, ok, err := finder.FindNext(curPath, seg)
 		if err != nil {
-			t.Errorf("Error for [%s]", tt.seg_id)
+			t.Errorf("Error for [%s]", tt.segID)
 		}
 		if ok != tt.isFound {
-			t.Errorf("Didn't get expected result [%s], instead got [%s]", tt.isFound, ok)
+			t.Errorf("Didn't get expected result [%t], instead got [%t]", tt.isFound, ok)
 		}
 		if newpath != tt.spath {
 			t.Errorf("Didn't get expected result [%s], instead got [%s]", tt.spath, newpath)

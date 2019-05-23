@@ -47,7 +47,7 @@ func TestSegmentParseFormatIdentity(t *testing.T) {
 func TestRefDes(t *testing.T) {
 	var tests = []struct {
 		spath     string
-		seg_id    string
+		segID     string
 		qual      string
 		eleidx    int
 		subeleidx int
@@ -69,17 +69,17 @@ func TestRefDes(t *testing.T) {
 		if err != nil {
 			t.Errorf("Didn't get a value for [%s]", tt.spath)
 		}
-		if actual.SegmentId != tt.seg_id {
-			t.Errorf("Didn't get expected result [%s], instead got [%s]", tt.seg_id, actual.SegmentId)
+		if actual.SegmentID != tt.segID {
+			t.Errorf("Didn't get expected result [%s], instead got [%s]", tt.segID, actual.SegmentID)
 		}
-		if actual.IdValue != tt.qual {
-			t.Errorf("Didn't get expected result [%s], instead got [%s]", tt.qual, actual.IdValue)
+		if actual.IDValue != tt.qual {
+			t.Errorf("Didn't get expected result [%s], instead got [%s]", tt.qual, actual.IDValue)
 		}
 		if actual.ElementIdx != tt.eleidx {
-			t.Errorf("Didn't get expected result [%s], instead got [%s]", tt.eleidx, actual.ElementIdx)
+			t.Errorf("Didn't get expected result [%d], instead got [%d]", tt.eleidx, actual.ElementIdx)
 		}
 		if actual.SubelementIdx != tt.subeleidx {
-			t.Errorf("Didn't get expected result [%s], instead got [%s]", tt.subeleidx, actual.SubelementIdx)
+			t.Errorf("Didn't get expected result [%d], instead got [%d]", tt.subeleidx, actual.SubelementIdx)
 		}
 		if len(actual.Path) != 0 {
 			t.Errorf("Path is not empty")
@@ -113,8 +113,8 @@ func TestRefDesMatchingNone(t *testing.T) {
 	if apath != tpath {
 		t.Errorf("Didn't get expected result [%s], instead got [%s]", tpath, apath)
 	}
-	if actual.SegmentId != "" {
-		t.Errorf("Didn't get expected result [%s], instead got [%s]", "", actual.SegmentId)
+	if actual.SegmentID != "" {
+		t.Errorf("Didn't get expected result [%s], instead got [%s]", "", actual.SegmentID)
 	}
 }
 
@@ -128,8 +128,8 @@ func TestRefDesMatchingOk(t *testing.T) {
 	if apath != tpath {
 		t.Errorf("Didn't get expected result [%s], instead got [%s]", tpath, apath)
 	}
-	if actual.SegmentId != "SV2" {
-		t.Errorf("Didn't get expected result [%s], instead got [%s]", "SV2", actual.SegmentId)
+	if actual.SegmentID != "SV2" {
+		t.Errorf("Didn't get expected result [%s], instead got [%s]", "SV2", actual.SegmentID)
 	}
 }
 
@@ -183,17 +183,17 @@ func TestX12PathGeneralNoSegment(t *testing.T) {
 		if actual.IsAbs() != tt.x12Path.IsAbs() {
 			t.Errorf("[%s] was not relative", tt.spath)
 		}
-		if actual.SegmentId != "" {
-			t.Errorf("Didn't get expected result [%s], instead got [%s]", "", actual.SegmentId)
+		if actual.SegmentID != "" {
+			t.Errorf("Didn't get expected result [%s], instead got [%s]", "", actual.SegmentID)
 		}
-		if actual.IdValue != "" {
-			t.Errorf("Didn't get expected result [%s], instead got [%s]", "", actual.IdValue)
+		if actual.IDValue != "" {
+			t.Errorf("Didn't get expected result [%s], instead got [%s]", "", actual.IDValue)
 		}
 		if actual.ElementIdx != 0 {
-			t.Errorf("Didn't get expected result [%s], instead got [%s]", 0, actual.ElementIdx)
+			t.Errorf("Didn't get expected result [%d], instead got [%d]", 0, actual.ElementIdx)
 		}
 		if actual.SubelementIdx != 0 {
-			t.Errorf("Didn't get expected result [%s], instead got [%s]", 0, actual.SubelementIdx)
+			t.Errorf("Didn't get expected result [%d], instead got [%d]", 0, actual.SubelementIdx)
 		}
 		if actual.Path != tt.x12Path.Path {
 			t.Errorf("Path: Didn't get expected result [%s], instead got [%s]", tt.x12Path.Path, actual.Path)
@@ -237,17 +237,17 @@ func TestX12PathGeneral(t *testing.T) {
 		if actual.IsAbs() != tt.x12Path.IsAbs() {
 			t.Errorf("[%s] was not relative", tt.spath)
 		}
-		if actual.SegmentId != tt.x12Path.SegmentId {
-			t.Errorf("Didn't get expected result [%s], instead got [%s]", tt.x12Path.SegmentId, actual.SegmentId)
+		if actual.SegmentID != tt.x12Path.SegmentID {
+			t.Errorf("Didn't get expected result [%s], instead got [%s]", tt.x12Path.SegmentID, actual.SegmentID)
 		}
-		if actual.IdValue != tt.x12Path.IdValue {
-			t.Errorf("Didn't get expected result [%s], instead got [%s]", tt.x12Path.IdValue, actual.IdValue)
+		if actual.IDValue != tt.x12Path.IDValue {
+			t.Errorf("Didn't get expected result [%s], instead got [%s]", tt.x12Path.IDValue, actual.IDValue)
 		}
 		if actual.ElementIdx != tt.x12Path.ElementIdx {
-			t.Errorf("Didn't get expected result [%s], instead got [%s]", tt.x12Path.ElementIdx, actual.ElementIdx)
+			t.Errorf("Didn't get expected result [%d], instead got [%d]", tt.x12Path.ElementIdx, actual.ElementIdx)
 		}
 		if actual.SubelementIdx != tt.x12Path.SubelementIdx {
-			t.Errorf("Didn't get expected result [%s], instead got [%s]", tt.x12Path.SubelementIdx, actual.SubelementIdx)
+			t.Errorf("Didn't get expected result [%d], instead got [%d]", tt.x12Path.SubelementIdx, actual.SubelementIdx)
 		}
 		if actual.Path != tt.x12Path.Path {
 			t.Errorf("Path: Didn't get expected result [%s], instead got [%s]", tt.x12Path.Path, actual.Path)

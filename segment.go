@@ -6,27 +6,31 @@ import (
 	"strings"
 )
 
+// Segment : TODO
 type Segment struct {
-	SegmentId  string
+	SegmentID  string
 	Composites []Composite
 }
 
+// Composite : TODO
 type Composite []string
 
+// ElementValue : TODO
 type ElementValue struct {
 	X12Path X12Path
 	Value   string
 }
 
+// NewSegment : TODO
 func NewSegment(line string, elementTerm byte, subelementTerm byte, repTerm byte) Segment {
 	fields := strings.Split(line, string(elementTerm))
-	segmentId := fields[0]
+	segmentID := fields[0]
 	comps := make([]Composite, len(fields)-1)
 	for i, v := range fields[1:] {
 		c := strings.Split(v, string(subelementTerm))
 		comps[i] = c
 	}
-	return Segment{segmentId, comps}
+	return Segment{segmentID, comps}
 }
 
 // GetValue returns the string value of the simple element at the x12path
@@ -37,8 +41,8 @@ func (s *Segment) GetValue(x12path string) (val string, found bool, err error) {
 	if xpath, err = ParseX12Path(x12path); err != nil {
 		return "", false, err
 	}
-	if xpath.SegmentId != "" && s.SegmentId != xpath.SegmentId {
-		return "", false, fmt.Errorf("Looking for Segment ID[%s], mine is [%s]", xpath.SegmentId, s.SegmentId)
+	if xpath.SegmentID != "" && s.SegmentID != xpath.SegmentID {
+		return "", false, fmt.Errorf("Looking for Segment ID[%s], mine is [%s]", xpath.SegmentID, s.SegmentID)
 	}
 	if xpath.ElementIdx == 0 {
 		return "", false, fmt.Errorf("No element index specified for [%s]", x12path)
@@ -61,13 +65,14 @@ func (s *Segment) GetValue(x12path string) (val string, found bool, err error) {
 	return "", false, nil
 }
 
+// SetValue : TODO
 func (s *Segment) SetValue(x12path, val string) (err error) {
 	var xpath *X12Path
 	if xpath, err = ParseX12Path(x12path); err != nil {
 		return err
 	}
-	if xpath.SegmentId != "" && s.SegmentId != xpath.SegmentId {
-		return fmt.Errorf("Looking for Segment ID[%s], mine is [%s]", xpath.SegmentId, s.SegmentId)
+	if xpath.SegmentID != "" && s.SegmentID != xpath.SegmentID {
+		return fmt.Errorf("Looking for Segment ID[%s], mine is [%s]", xpath.SegmentID, s.SegmentID)
 	}
 	if xpath.ElementIdx == 0 {
 		return fmt.Errorf("No element index specified for [%s]", x12path)
@@ -90,12 +95,13 @@ func (s *Segment) SetValue(x12path, val string) (err error) {
 	return nil
 }
 
+// GetAllValues : TODO
 func (s *Segment) GetAllValues() <-chan ElementValue {
 	ch := make(chan ElementValue)
 	go func() {
 		for i, comp := range s.Composites {
 			for j, elem := range comp {
-				x12path := X12Path{SegmentId: s.SegmentId, ElementIdx: i + 1, SubelementIdx: j + 1}
+				x12path := X12Path{SegmentID: s.SegmentID, ElementIdx: i + 1, SubelementIdx: j + 1}
 				ev := ElementValue{x12path, elem}
 				//ch <- new(ElementValue{new(X12Path{SegmentId: s.SegmentId, ElementIdx: i+1, SubelementIdx: j+1}), elem})
 				ch <- ev
@@ -111,9 +117,10 @@ func (s *Segment) String() string {
 	return s.Format('*', ':', '^')
 }
 
+// Format : TODO
 func (s *Segment) Format(elementTerm byte, subelementTerm byte, repTerm byte) string {
 	var buf bytes.Buffer
-	buf.WriteString(s.SegmentId)
+	buf.WriteString(s.SegmentID)
 	for _, comp := range s.Composites {
 		buf.WriteByte(elementTerm)
 		buf.WriteString(formatComposite(comp, subelementTerm, repTerm))

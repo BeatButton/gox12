@@ -1,17 +1,16 @@
 package gox12
 
-import ()
-
-// Given the current location, find the path of the new segment
+// X12PathFinder : Given the current location, find the path of the new segment
 type X12PathFinder interface {
 	FindNext(x12Path string, segment Segment) (foundPath string, found bool, err error)
 }
 
-// Hardcoded lookups for standard X12 structure wrappers
+// HeaderPathFinder : Hardcoded lookups for standard X12 structure wrappers
 type HeaderPathFinder struct {
 	hardMap map[string]string
 }
 
+// NewHeaderMapFinder : TODO
 func NewHeaderMapFinder() *HeaderPathFinder {
 	f := new(HeaderPathFinder)
 	f.hardMap = map[string]string{
@@ -25,19 +24,22 @@ func NewHeaderMapFinder() *HeaderPathFinder {
 	return f
 }
 
+// FindNext : TODO
 func (finder *HeaderPathFinder) FindNext(x12Path string, segment Segment) (foundPath string, found bool, err error) {
-	segId := segment.SegmentId
-	p, ok := finder.hardMap[segId]
+	segID := segment.SegmentID
+	p, ok := finder.hardMap[segID]
 	if ok {
 		return p, ok, nil
 	}
 	return "", false, nil
 }
 
+// FirstMatchPathFinder : TODO
 type FirstMatchPathFinder struct {
 	Finders []X12PathFinder
 }
 
+// NewFirstMatchPathFinder : TODO
 func NewFirstMatchPathFinder(finder ...X12PathFinder) *FirstMatchPathFinder {
 	f := new(FirstMatchPathFinder)
 	f.Finders = make([]X12PathFinder, 0)
@@ -47,6 +49,7 @@ func NewFirstMatchPathFinder(finder ...X12PathFinder) *FirstMatchPathFinder {
 	return f
 }
 
+// FindNext : TODO
 func (finder *FirstMatchPathFinder) FindNext(x12Path string, segment Segment) (foundPath string, found bool, err error) {
 	for _, f2 := range finder.Finders {
 		res, ok, err := f2.FindNext(x12Path, segment)
@@ -59,6 +62,7 @@ func (finder *FirstMatchPathFinder) FindNext(x12Path string, segment Segment) (f
 
 // type PathFinder func(string, Segment) (string, bool, error)
 
+// EmptyPath : TODO
 type EmptyPath struct {
 	Path string
 }
@@ -77,29 +81,29 @@ func findPath(rawpath string, seg Segment) (foundPath string, ok bool, err error
 // is the segment "matched"
 type segMatcher func(seg Segment) bool
 
-// segmentMatchBySegmentId matches a segment only by the segment ID
-func segmentMatchBySegmentId(segmentId string) segMatcher {
+// segmentMatchBySegmentID matches a segment only by the segment ID
+func segmentMatchBySegmentID(segmentID string) segMatcher {
 	return func(seg Segment) bool {
-		return seg.SegmentId == segmentId
+		return seg.SegmentID == segmentID
 	}
 }
 
-// segmentMatchIdByPath matches a segment by the segment ID and the ID value of the
+// segmentMatchIDByPath matches a segment by the segment ID and the ID value of the
 // element at the x12path
-func segmentMatchIdByPath(segmentId string, x12path string, id_value string) segMatcher {
+func segmentMatchIDByPath(segmentID string, x12path string, idValue string) segMatcher {
 	return func(seg Segment) bool {
 		v, found, _ := seg.GetValue(x12path)
-		return seg.SegmentId == segmentId && found && v == id_value
+		return seg.SegmentID == segmentID && found && v == idValue
 	}
 }
 
 // segmentMatchIdByPath matches a segment by the segment ID and one of the ID value of the
 // element at the x12path
-func segmentMatchIdListByPath(segmentId string, x12path string, id_list []string) segMatcher {
+func segmentMatchIDListByPath(segmentID string, x12path string, idList []string) segMatcher {
 	return func(seg Segment) bool {
 		v, found, _ := seg.GetValue(x12path)
-		x := stringInSlice(v, id_list)
-		return seg.SegmentId == segmentId && found && x
+		x := stringInSlice(v, idList)
+		return seg.SegmentID == segmentID && found && x
 	}
 }
 
